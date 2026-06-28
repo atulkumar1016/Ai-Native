@@ -1,13 +1,16 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
+
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor to append authentication token to requests automatically
 client.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -21,16 +24,12 @@ client.interceptors.request.use(
   }
 );
 
-// Interceptor to intercept global errors (e.g. 401 unauthorised log outs)
 client.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Clear credentials
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Redirecting home is typically handled in context state,
-      // but clearing token guarantees next router check catches it
     }
     return Promise.reject(error);
   }
