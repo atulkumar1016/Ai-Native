@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
 const protect = async (req, res, next) => {
   let token;
@@ -15,12 +14,15 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super_secret_jwt_token_key_12345');
 
-      // Get user from the token
-      req.user = await User.findById(decoded.id).select('-password');
-      if (!req.user) {
+      // Try DB first, then fall back to in-memory users
+      const { findUserById } = require('../controllers/authController');
+      const user = await findUserById(decoded.id);
+
+      if (!user) {
         return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
       }
 
+      req.user = user;
       next();
     } catch (error) {
       console.error(error);
