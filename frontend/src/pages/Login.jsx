@@ -102,9 +102,9 @@ const Login = () => {
 
           {/* Quick Sandbox Login Box */}
           <div className="p-3 bg-white/5 rounded-xl border border-darkBorder text-center text-xs space-y-1">
-            <span className="text-gray-400">Default Demo Credentials:</span>
+            <span className="text-gray-400">
             <div className="flex justify-center gap-3 font-mono text-brandIndigo font-bold">
-              <span>user@test.com / password123</span>
+              <span>If First Time Please Register First</span>
             </div>
           </div>
         </div>
